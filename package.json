@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:all": "pnpm -F 'app-*' dev",
+    "dev:app1": "pnpm -C apps/app-1 dev",
+    "dev:app2": "pnpm -C apps/app-2 dev",
+    "build:all": "pnpm -F 'app-*' build"
   },
   "keywords": [],
   "author": "",
