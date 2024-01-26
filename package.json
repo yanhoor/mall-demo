@@ -8,7 +8,9 @@
     "dev-app1": "pnpm -C apps/app-1 dev",
     "dev-app2": "pnpm -C apps/app-2 dev",
     "build-all": "pnpm -F app-* build",
-    "build-my-module": "pnpm -C modules/my-module prepack"
+    "build-my-module": "pnpm -C modules/my-module prepack",
+    "dev-my-module": "pnpm -C modules/my-module dev",
+    "prepare-my-module": "pnpm -C modules/my-module dev:prepare"
   },
   "keywords": [],
   "dependencies": {

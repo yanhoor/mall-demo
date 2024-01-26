@@ -1,4 +1,4 @@
-import { defineNuxtModule, addPlugin, addComponentsDir, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, addComponentsDir, addImportsDir, createResolver } from '@nuxt/kit'
 
 /**
  * @description 本 module 入口，当 Nuxt 应用的 nuxt.config 引用本 module 时，就会加载本文件
@@ -26,23 +26,28 @@ export default defineNuxtModule<ModuleOptions>({
     a: 0
   },
   // 注册 hooks 的语法糖
-  hooks: {},
+  // hooks: {
+  //   'app:error': (err: any) => {
+  //     console.error('=========app:error from my-module=========', err);
+  //   }
+  // },
   /**
    * @description 设置本 module 的逻辑，可以异步
    * @param options 使用本 module 时，在 nuxt.config 的 myModule 传入的参数选项
    * @param nuxt
    */
   setup (options, nuxt) {
-    const resolver = createResolver(import.meta.url)
+    const {resolve} = createResolver(import.meta.url)
 
     console.log('========setup options========', options)
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     // 应用运行时并不包含 module，如果想要应用包含本 module 提供的运行时代码，可以在 runtime 目录编写。
-    addPlugin(resolver.resolve('./runtime/plugin'))
-    addPlugin(resolver.resolve('./plugins/test'))
+    addPlugin(resolve('./runtime/plugins/plugin'))
+    addPlugin(resolve('./runtime/plugins/test'))
     addComponentsDir({
-      path: resolver.resolve('./components')
+      path: resolve('./runtime/components')
     })
+    addImportsDir(resolve('./runtime/composables'))
   }
 })

@@ -1,6 +1,8 @@
 <template>
   <div>
+    <h2>app-1</h2>
     <NuxtWelcome />
+    <ModuleComp />
   </div>
 </template>
 
