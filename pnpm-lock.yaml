@@ -6,9 +6,17 @@ settings:
 
 importers:
 
-  .: {}
+  .:
+    dependencies:
+      '@nuxt/kit':
+        specifier: ^3.9.3
+        version: 3.9.3(rollup@3.29.4)
 
   apps/app-1:
+    dependencies:
+      my-module:
+        specifier: workspace:*
+        version: link:../../modules/my-module
     devDependencies:
       nuxt:
         specifier: ^3.9.3
@@ -21,18 +29,10 @@ importers:
         version: 4.2.5(vue@3.4.15)
 
   apps/app-2:
-    devDependencies:
-      nuxt:
-        specifier: ^3.9.3
-        version: 3.9.3(vite@5.0.12)
-      vue:
-        specifier: ^3.4.14
-        version: 3.4.15(typescript@5.3.3)
-      vue-router:
-        specifier: ^4.2.5
-        version: 4.2.5(vue@3.4.15)
-
-  apps/app-3:
+    dependencies:
+      my-module:
+        specifier: workspace:*
+        version: link:../../modules/my-module
     devDependencies:
       nuxt:
         specifier: ^3.9.3
@@ -45,10 +45,6 @@ importers:
         version: 4.2.5(vue@3.4.15)
 
   modules/my-module:
-    dependencies:
-      '@nuxt/kit':
-        specifier: ^3.9.3
-        version: 3.9.3(rollup@3.29.4)
     devDependencies:
       '@nuxt/devtools':
         specifier: latest
@@ -1375,6 +1371,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     dev: true
     bundledDependencies:
       - napi-wasm
@@ -4622,6 +4619,10 @@ packages:
     resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
     engines: {node: ^14 || ^16 || >=18}
     hasBin: true
+    dev: true
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
     dev: true
 
   /natural-compare@1.4.0:
