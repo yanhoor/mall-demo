@@ -1,4 +1,4 @@
-import { defineNuxtModule, addPlugin, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addPlugin, addComponentsDir, createResolver } from '@nuxt/kit'
 
 /**
  * @description 本 module 入口，当 Nuxt 应用的 nuxt.config 引用本 module 时，就会加载本文件
@@ -8,6 +8,10 @@ export interface ModuleOptions {
   a: number
 }
 
+/**
+ * @description 最后返回一个函数：function (inlineOptions, nuxt)
+ *
+ */
 export default defineNuxtModule<ModuleOptions>({
   meta: {
     name: 'my-module', // 通常是 npm 下载的包名，如 @nuxtjs/ccc
@@ -36,5 +40,9 @@ export default defineNuxtModule<ModuleOptions>({
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     // 应用运行时并不包含 module，如果想要应用包含本 module 提供的运行时代码，可以在 runtime 目录编写。
     addPlugin(resolver.resolve('./runtime/plugin'))
+    addPlugin(resolver.resolve('./plugins/test'))
+    addComponentsDir({
+      path: resolver.resolve('./components')
+    })
   }
 })

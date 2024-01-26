@@ -1,5 +1,5 @@
 import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  console.log('Plugin injected by my-module3366633!')
+  console.log('===========test plugin from my-module================')
 })
