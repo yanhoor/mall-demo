@@ -27,8 +27,8 @@ export default defineNuxtConfig({
   //     }
   //   }
   // },
+  modules: ["my-module"],
   'myModule': {
     a: 12
   },
-  modules: ["my-module"]
 })

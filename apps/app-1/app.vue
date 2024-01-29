@@ -1,12 +1,15 @@
 <template>
   <div>
-    <h2>app-1</h2>
-    <NuxtWelcome />
+    <h2>app-1{{ myModuleFeature() }}</h2>
     <ModuleComp />
+    <img :src="gif" alt="gif">
+    <NuxtWelcome />
   </div>
 </template>
 
 <script setup>
+import { myModuleFeature } from '#build/my-module-feature.mjs'
+import gif from '#my-module/assets/image/gif.gif'
 // const {execute} = await useFetch('/1111', {
 //   onRequest({ request, options }) {
 //     // Set the request headers

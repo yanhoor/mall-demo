@@ -34,14 +34,16 @@ export default defineNuxtModule<ModuleOptions>({
   /**
    * @description 设置本 module 的逻辑，可以异步
    * @param options 使用本 module 时，在 nuxt.config 的 myModule 传入的参数选项
-   * @param nuxt
+   * @param nuxt 使用本 module 的 app 实例，所以下面的 nuxt.options 都是修改 app 的 nuxt.config
    */
   setup (options, nuxt) {
     const {resolve} = createResolver(import.meta.url)
     const runtimeDir = resolve('./runtime')
+
+    // 暴露 runtime 目录给应用导入，如 import { useModuleTest } from '#my-module/composables/useModuleTest'
     nuxt.options.alias['#my-module'] = runtimeDir
 
-    console.log('========setup options========', options)
+    console.log('========setup options========', options, nuxt.options)
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     // 应用运行时并不包含 module，如果想要应用包含本 module 提供的运行时代码，可以在 runtime 目录编写。
@@ -60,12 +62,12 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.css.push(resolve('./runtime/assets/style/common.css'))
 
-    // todo: 无效
+    // todo: 可以通过 import gif from '#my-module/assets/image/gif.gif' 引用，实际也会打包在 app 的 public 下
     nuxt.hook('nitro:config', async (nitroConfig) => {
       nitroConfig.publicAssets ||= []
       nitroConfig.publicAssets.push({
         dir: resolve('./runtime/assets/image'),
-        maxAge: 60 * 60 * 24 * 365 // 1 year
+        maxAge: 60 * 60 * 24 * 365 // 缓存
       })
     })
 
