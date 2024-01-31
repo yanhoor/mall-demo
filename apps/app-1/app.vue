@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h2>app-1{{ myModuleFeature() }}</h2>
-    <ModuleComp />
+    <h2 class="text-space">app-1{{ myModuleFeature() }}</h2>
+    <MyModuleComp />
     <img :src="gif" alt="gif">
     <NuxtWelcome />
   </div>

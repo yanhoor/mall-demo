@@ -1,11 +1,13 @@
-import { defineNuxtModule, addTemplate, addPlugin, addComponentsDir, addImportsDir, createResolver } from '@nuxt/kit'
-
+import { defineNuxtModule, addTemplate, addPlugin, addComponentsDir, addImportsDir, createResolver, installModule } from '@nuxt/kit'
+import  type { ModuleOptions as tw } from '@nuxtjs/tailwindcss'
 /**
  * @description 本 module 入口，当 Nuxt 应用的 nuxt.config 引用本 module 时，就会加载本文件
  */
 // nuxt.config 配置本 module 时选项的类型
 export interface ModuleOptions {
   a: number
+  prefix?: string
+  tailwindcss?: tw['config']
 }
 
 /**
@@ -23,7 +25,10 @@ export default defineNuxtModule<ModuleOptions>({
   },
   // 本 module 的默认配置，也可以是返回配置对象的函数
   defaults: {
-    a: 0
+    a: 0,
+    tailwindcss: {
+    },
+    prefix: 'my' // 组件的前缀，使用本 module 的组件时都是 <my-xxxxx />
   },
   // 注册 hooks 的语法糖
   // hooks: {
@@ -36,25 +41,56 @@ export default defineNuxtModule<ModuleOptions>({
    * @param options 使用本 module 时，在 nuxt.config 的 myModule 传入的参数选项
    * @param nuxt 使用本 module 的 app 实例，所以下面的 nuxt.options 都是修改 app 的 nuxt.config
    */
-  setup (options, nuxt) {
+  async setup (options, nuxt) {
     const {resolve} = createResolver(import.meta.url)
     const runtimeDir = resolve('./runtime')
 
     // 暴露 runtime 目录给应用导入，如 import { useModuleTest } from '#my-module/composables/useModuleTest'
     nuxt.options.alias['#my-module'] = runtimeDir
 
-    console.log('========setup options========', options, nuxt.options)
+    // console.log('========setup options========', options, nuxt.options)
 
-    // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
+    // 读取 app 的 tailwind.config 文件，合并前
+    nuxt.hook('tailwindcss:loadConfig', function (p) {
+      console.log('========tailwindcss:loadConfig========', p)
+    })
+
+    // 最终的配置
+    nuxt.hook('tailwindcss:resolvedConfig', function (p) {
+      console.log('========tailwindcss:resolvedConfig========')
+    })
+
+    // 读取 app 的 tailwind.config 文件，合并后
+    // 因为这里比 installModule 晚执行，所以这里的配置会覆盖 installModule 传的同名配置
+    nuxt.hook('tailwindcss:config', function (tailwindConfig) {
+      console.log('========tailwindcss:config========', tailwindConfig)
+      // tailwindConfig.theme = tailwindConfig.theme || {}
+      // tailwindConfig.theme.extend = tailwindConfig.theme.extend || {}
+      // tailwindConfig.theme.extend.colors = tailwindConfig.theme.extend.colors || {}
+      // options.tailwindcss = defu(options.tailwindcss || {}, tailwindConfig)
+    })
+    console.log('========setup options.tailwindcss========', options.tailwindcss)
+
+    // 使用 installModule 安装的模块都会暴露给 app 使用，需要本 module 先安装
+    await installModule('@nuxtjs/tailwindcss', {
+      // 暴露 tw 的配置值给 app 使用，但是即使是 false 也可以在 app 的 style 使用 theme() 函数
+      exposeConfig: {
+        level: 4, // 暴露的深度，如 theme.colors.red.500 4级
+        alias: '#twcss' // 别名，如 import { theme } from '#twcss'
+      },
+      config: options.tailwindcss
+    })
+
     // 应用运行时并不包含 module，如果想要应用包含本 module 提供的运行时代码，可以在 runtime 目录编写。
 
-    // Plugin
+    // Plugin，不要加 .ts 后缀，因为打包后会被转化成 .mjs
     addPlugin(resolve('./runtime/plugins/plugin'))
     addPlugin(resolve('./runtime/plugins/test'))
 
     // component
     addComponentsDir({
-      path: resolve('./runtime/components')
+      path: resolve('./runtime/components'),
+      prefix: options.prefix
     })
 
     // composables
@@ -76,7 +112,7 @@ export default defineNuxtModule<ModuleOptions>({
     // 可以使用 import { myModuleFeature } from '#build/my-module-feature.mjs'
     addTemplate({
       filename: 'my-module-feature.mjs',
-      getContents: () => 'export const myModuleFeature = () => "hello world !"'
+      getContents: () => 'export const myModuleFeature = () => "string from my-module my-module-feature template file"'
     })
 
     // 本 module 的清理工作，比如本 module 开启了一个 watcher，应该在 Nuxt 应用生命周期结束时关闭

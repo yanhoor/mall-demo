@@ -1,10 +1,10 @@
 <template>
   <div>
     Nuxt module playground!
-    <h3 class="text-green">{{ myModuleFeature() }}{{ modRef }}</h3>
+    <h3 class="text-space font-bold">{{ myModuleFeature() }}{{ modRef }}</h3>
     <img :src="gif" alt="gif">
-    <button @click="modRef ++">test</button>
-    <ModuleComp />
+    <button class="btn text-primary" @click="modRef ++">test</button>
+    <MyModuleComp />
   </div>
 </template>
 

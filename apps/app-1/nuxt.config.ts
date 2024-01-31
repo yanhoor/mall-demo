@@ -28,7 +28,16 @@ export default defineNuxtConfig({
   //   }
   // },
   modules: ["my-module"],
-  'myModule': {
-    a: 12
+  myModule: {
+    a: 233,
+    tailwindcss: {
+      theme: {
+        extend: {
+          colors: {
+            space: '#22ee56'
+          },
+        }
+      }
+    }
   },
 })
